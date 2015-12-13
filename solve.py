@@ -4,8 +4,8 @@ import numpy
 
 def function_value(x):
     """
-    Oblicza wartość funkcji x+log(x)-4 dla podanej wartości x. Zwraca NaN dla ujemnych argumentów, ponieważ logarytm
-    liczby ujemnej nie jest liczbą rzeczywistą.
+    Oblicza wartość funkcji x+log(x)-4 dla podanej wartości x. Zwraca NaN dla ujemnych argumentów,
+    ponieważ logarytm liczby ujemnej nie jest liczbą rzeczywistą.
 
     :arg x : float
     :rtype : float - wartość funkcji x+log(x)-4
@@ -26,8 +26,8 @@ def derivative_function_value(x):
 
 def simple_iteration(x):
     """
-    Oblicza wartość funkcji punktu stałego (4-log(x)). Zwraca NaN dla ujemnych argumentów, ponieważ logarytm
-    liczby ujemnej nie jest liczbą rzeczywistą.
+    Oblicza wartość funkcji punktu stałego (4-log(x)). Zwraca NaN dla ujemnych argumentów,
+    ponieważ logarytm liczby ujemnej nie jest liczbą rzeczywistą.
 
     :arg x : float
     :rtype : float = wartośc funkcji 4-log(x)
@@ -37,7 +37,8 @@ def simple_iteration(x):
 
 def calculate_simple_iterations(x, iterations_limit=10):
     """
-    Wykonuje metodę iteracji prostych. Ilość iteracji jest określona przez argument iterations_limit.
+    Wykonuje metodę iteracji prostych.
+    Ilość iteracji jest określona przez argument iterations_limit.
 
     :arg x : float
     :arg iterations_limit : int
@@ -49,6 +50,7 @@ def calculate_simple_iterations(x, iterations_limit=10):
         result = simple_iteration(start_point)
         if result < 0:
             print("Metoda nie jest zbieżna dla danego punktu początkowego.")
+            result = None
             break
         start_point = result
     return result
@@ -67,7 +69,8 @@ def secant_method(x0, x1):
 
 def calculate_secant_iterations(x0, x1, iterations_limit=10):
     """
-    Wykonuje iterację metody siecznych. Ilość iteracji jest określona przez argument iterations_limit.
+    Wykonuje iterację metody siecznych.
+    Ilość iteracji jest określona przez argument iterations_limit.
     Argumenty x0 i x1 to punkty startowe metody.
 
     :arg x0 : float
@@ -100,7 +103,8 @@ def tangent_method(x):
 
 def calculate_tangent_iterations(x, iterations_limit=10):
     """
-    Wykonuje iterację metody stycznych. Ilość iteracji jest określona przez argument iterations_limit.
+    Wykonuje iterację metody stycznych.
+    Ilość iteracji jest określona przez argument iterations_limit.
 
     :arg x : float - Punkt startowy
     :arg iterations_limit : int
@@ -113,6 +117,7 @@ def calculate_tangent_iterations(x, iterations_limit=10):
         start_point = result
         if result < 0:
             print("Metoda nie jest zbieżna dla danego punktu początkowego.")
+            result = None
             break
     return result
 
@@ -128,6 +133,12 @@ def parse_user_provided_float(label):
     while True:
         try:
             val = float(input("Podaj wartość {0}:".format(label)))
+            if val < 0:
+                print("Wartość {0} nie może być mniejsza od zera,"
+                      " ponieważ funkcja:\n x + log(x) - 4 = 0\n"
+                      " jest określona tylko dla liczb rzeczywistych"
+                      " większych lub równych 0.".format(label))
+                continue
         except ValueError:
             print("Wpisz poprawną wartość {0}.".format(label))
             continue
@@ -137,12 +148,13 @@ def parse_user_provided_float(label):
     return val
 
 if __name__ == '__main__':
-    simple_iterations_start_point = parse_user_provided_float("punktu startowego metody iteracji prostych")
-    print(calculate_simple_iterations(simple_iterations_start_point))
+    X_SIMPLE_ITERATIONS = parse_user_provided_float("punktu startowego metody iteracji prostych")
+    print("Wynik metody iteracji prostych {0}".format(calculate_simple_iterations(X_SIMPLE_ITERATIONS)))
 
-    x0_secant = parse_user_provided_float("punktu startowego x0 dla metody siecznych")
-    x1_secant = parse_user_provided_float("punktu startowego x1 dla metody siecznych")
-    print(calculate_secant_iterations(x0_secant, x1_secant))
+    X_TANGENT = parse_user_provided_float("punktu startowego metody stycznych")
+    print("Wynik metody stycznych: {0}".format(calculate_tangent_iterations(X_TANGENT)))
 
-    tangent_starting_point = parse_user_provided_float("punktu startowego metody stycznych")
-    print(calculate_tangent_iterations(tangent_starting_point))
+    X0_SECANT = parse_user_provided_float("punktu startowego x0 dla metody siecznych")
+    X1_SECANT = parse_user_provided_float("punktu startowego x1 dla metody siecznych")
+    print("Wynik metody siecznych {0}".format(calculate_secant_iterations(X0_SECANT, X1_SECANT)))
+
