@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import numpy
-import math
 
 ALPHA = 2.92627106244350
 
@@ -63,7 +62,7 @@ def calculate_simple_iterations(x, iterations_limit=10, precision=0.0):
         if result < 0:
             print("Metoda nie jest zbieżna dla danego punktu początkowego.")
             return None
-        elif math.fabs(result - ALPHA) < precision:
+        elif numpy.fabs(result - ALPHA) < precision:
             break
         start_point = result
 
@@ -105,7 +104,7 @@ def calculate_secant_iterations(x0, x1, iterations_limit=10, precision=0.0):
         x_k = result
         if x_k == x_k_min_1:
             break
-        elif math.fabs(result - ALPHA) < precision:
+        elif numpy.fabs(result - ALPHA) < precision:
             break
 
     print("Rozwiazanie dla metody siecznych znaleziono po {0} iteracjach.".format(i+1))
@@ -140,25 +139,26 @@ def calculate_tangent_iterations(x, iterations_limit=10, precision=0.0):
         if result < 0:
             print("Metoda nie jest zbieżna dla danego punktu początkowego.")
             return None
-        elif math.fabs(result - ALPHA) < precision:
+        elif numpy.fabs(result - ALPHA) < precision:
             break
 
     print("Rozwiazanie dla metody stycznych znaleziono po {0} iteracjach.".format(i+1))
     return result
 
 
-def parse_user_provided_float(label):
+def parse_user_provided_float(label, check_x_condition=True):
     """
     Funkcja pomocnicza wczytującą podawaną przez użytkownika wartość typu float.
 
     :arg label : string
+    :arg check_x_condition : boolean - sprawdzaj czy podany x spełnia warunek x>0
     :rtype : float
     """
     val = None
     while True:
         try:
             val = float(input("Podaj wartość {0}:".format(label)))
-            if val <= 0:
+            if check_x_condition and val <= 0:
                 print("Wartość {0} musi być większa od zera,"
                       " ponieważ funkcja:\n x + log(x) - 4 = 0\n"
                       " jest określona tylko dla liczb rzeczywistych"
@@ -196,7 +196,7 @@ def parse_user_provided_int(label):
     return val
 
 if __name__ == '__main__':
-    PRECISION = parse_user_provided_float("zadanej precyzji")
+    PRECISION = parse_user_provided_float("zadanej precyzji", check_x_condition=False)
     ITERATIONS_LIMIT = parse_user_provided_int("maksymalnej liczby iteracji")
     X_SIMPLE_ITERATIONS = parse_user_provided_float("punktu startowego metody iteracji prostych")
     print("Wynik metody iteracji prostych {0}".format(calculate_simple_iterations(X_SIMPLE_ITERATIONS, ITERATIONS_LIMIT,
@@ -206,7 +206,12 @@ if __name__ == '__main__':
     print("Wynik metody stycznych: {0}".format(calculate_tangent_iterations(X_TANGENT, ITERATIONS_LIMIT, PRECISION)))
 
     X0_SECANT = parse_user_provided_float("punktu startowego x0 dla metody siecznych")
-    X1_SECANT = parse_user_provided_float("punktu startowego x1 dla metody siecznych")
+    X1_SECANT = X0_SECANT
+    while X1_SECANT == X0_SECANT:
+        X1_SECANT = parse_user_provided_float("punktu startowego x1 dla metody siecznych")
+        if X1_SECANT == X0_SECANT:
+            print("Wartości x0 i x1 dla metody siecznych nie mogą być równe.")
+            continue
     print("Wynik metody siecznych {0}".format(calculate_secant_iterations(X0_SECANT, X1_SECANT, ITERATIONS_LIMIT,
                                                                           PRECISION)))
 
