@@ -158,11 +158,11 @@ def parse_user_provided_float(label):
     while True:
         try:
             val = float(input("Podaj wartość {0}:".format(label)))
-            if val < 0:
-                print("Wartość {0} nie może być mniejsza od zera,"
+            if val <= 0:
+                print("Wartość {0} musi być większa od zera,"
                       " ponieważ funkcja:\n x + log(x) - 4 = 0\n"
                       " jest określona tylko dla liczb rzeczywistych"
-                      " większych lub równych 0.".format(label))
+                      " większych od 0.".format(label))
                 continue
         except ValueError:
             print("Wpisz poprawną wartość {0}.".format(label))
@@ -184,8 +184,8 @@ def parse_user_provided_int(label):
     while True:
         try:
             val = int(input("Podaj wartość {0}:".format(label)))
-            if val < 0:
-                print("Wartość {0} nie może być mniejsza od zera.".format(label))
+            if val <= 0:
+                print("Wartość {0} musi bc większa od zera.".format(label))
                 continue
         except ValueError:
             print("Wpisz poprawną wartość {0}.".format(label))
