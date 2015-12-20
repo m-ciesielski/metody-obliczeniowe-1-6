@@ -209,9 +209,8 @@ if __name__ == '__main__':
     X1_SECANT = X0_SECANT
     while X1_SECANT == X0_SECANT:
         X1_SECANT = parse_user_provided_float("punktu startowego x1 dla metody siecznych")
-        if X1_SECANT == X0_SECANT:
-            print("Wartości x0 i x1 dla metody siecznych nie mogą być równe.")
-            continue
+        print("Wartości x0 i x1 dla metody siecznych nie mogą być równe.")
+
     print("Wynik metody siecznych {0}".format(calculate_secant_iterations(X0_SECANT, X1_SECANT, ITERATIONS_LIMIT,
                                                                           PRECISION)))
 
