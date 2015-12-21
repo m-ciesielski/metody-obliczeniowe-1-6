@@ -48,11 +48,6 @@ def calculate_simple_iterations(x, iterations_limit=10, precision=0.0):
     :rtype : float - przybliżona wartość miejsca zerowego
     """
 
-    # Sprawdzenie czy spełniony jest warunek ln(x) < 4
-    if math.log(x) >= 4:
-        print("Dla podanego punktu początkowego {0} nie jest spełniony warunek: ln(x) < 4". format(x))
-        return None
-
     start_point = x
     result = None
     i = 0
@@ -67,6 +62,7 @@ def calculate_simple_iterations(x, iterations_limit=10, precision=0.0):
         start_point = result
 
     print("Rozwiazanie dla metody iteracji prostych znaleziono po {0} iteracjach.".format(i+1))
+    print("Błąd metody: {0}".format(math.fabs(result-ALPHA)))
     return result
 
 
@@ -108,6 +104,7 @@ def calculate_secant_iterations(x0, x1, iterations_limit=10, precision=0.0):
             break
 
     print("Rozwiazanie dla metody siecznych znaleziono po {0} iteracjach.".format(i+1))
+    print("Błąd metody: {0}".format(math.fabs(result-ALPHA)))
     return result
 
 
@@ -130,6 +127,7 @@ def calculate_tangent_iterations(x, iterations_limit=10, precision=0.0):
     :arg iterations_limit : int
     :rtype : float - przybliżona wartość miejsca zerowego
     """
+
     start_point = x
     result = None
     i = 0
@@ -137,16 +135,20 @@ def calculate_tangent_iterations(x, iterations_limit=10, precision=0.0):
         result = tangent_method(start_point)
         start_point = result
         if result < 0:
-            print("Metoda nie jest zbieżna dla danego punktu początkowego.")
+            print("Metoda nie jest zbieżna dla danego punktu początkowego.\n W iteracji nr {0} x_i przyjmuję wartość {1},"
+                  "dla której równanie x-(f(x)/f'(x)) przyjmuję wartość ujemną({2}),\n"
+                  " więc wynik następnej iteracji będzie nieokreślony\n"
+                  " w zbiorze liczb rzeczywistych".format(i+1, start_point, result))
             return None
         elif math.fabs(result - ALPHA) < precision:
             break
 
     print("Rozwiazanie dla metody stycznych znaleziono po {0} iteracjach.".format(i+1))
+    print("Błąd metody: {0}".format(math.fabs(result-ALPHA)))
     return result
 
 
-def parse_user_provided_float(label, check_x_condition=True):
+def parse_user_provided_float(label, check_x_condition=True, check_iteration_condition=False):
     """
     Funkcja pomocnicza wczytującą podawaną przez użytkownika wartość typu float.
 
@@ -158,11 +160,19 @@ def parse_user_provided_float(label, check_x_condition=True):
     while True:
         try:
             val = float(input("Podaj wartość {0}:".format(label)))
+
+            valid = True
             if check_x_condition and val <= 0:
                 print("Wartość {0} musi być większa od zera,"
                       " ponieważ funkcja:\n x + log(x) - 4 = 0\n"
                       " jest określona tylko dla liczb rzeczywistych"
                       " większych od 0.".format(label))
+                valid = False
+            if check_iteration_condition and math.log(val) >= 4:
+                print("Dla punktu startowego metody iteracji prostych musi byc spełniony warunek"
+                      "ln(x) < 4".format(label))
+                valid = False
+            if not valid:
                 continue
         except ValueError:
             print("Wpisz poprawną wartość {0}.".format(label))
@@ -196,9 +206,10 @@ def parse_user_provided_int(label):
     return val
 
 if __name__ == '__main__':
-    PRECISION = parse_user_provided_float("zadanej precyzji", check_x_condition=False)
+    PRECISION = parse_user_provided_float("zadanej precyzji (np. 0.001, 1e-05)", check_x_condition=False)
     ITERATIONS_LIMIT = parse_user_provided_int("maksymalnej liczby iteracji")
-    X_SIMPLE_ITERATIONS = parse_user_provided_float("punktu startowego metody iteracji prostych")
+    X_SIMPLE_ITERATIONS = parse_user_provided_float("punktu startowego metody iteracji prostych",
+                                                    check_iteration_condition=True)
     print("Wynik metody iteracji prostych {0}".format(calculate_simple_iterations(X_SIMPLE_ITERATIONS, ITERATIONS_LIMIT,
                                                                                   PRECISION)))
 
